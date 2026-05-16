@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korea Velvet News — {{ month_label }}</title>
+  <meta name="description" content="Korean deer velvet industry news digest for DINZ — {{ month_label }}.">
+
+  <!-- Google Fonts: Merriweather (body) + Lato (headings/UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+  <!-- ===== Site Header ===== -->
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-header__title">Korea Velvet News</h1>
+      <p class="site-header__date">As of {{ as_of_date }}</p>
+      <p class="site-header__tagline">Korean deer velvet industry news for DINZ</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      {% if articles %}
+
+        <!-- ===== Table of Contents ===== -->
+        <section class="toc" aria-label="This month's articles">
+          <p class="toc__heading">This month: {{ month_label }}</p>
+          <ul class="toc__list">
+            {% for article in articles %}
+            <li>
+              <a href="#article-{{ loop.index }}">{{ article.title_en | e }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </section>
+
+        <!-- ===== Articles ===== -->
+        <section class="articles" aria-label="Articles">
+          {% for article in articles %}
+            {% include '_article.html' %}
+          {% endfor %}
+        </section>
+
+      {% else %}
+
+        <!-- ===== Empty State ===== -->
+        <p class="empty-state">
+          No articles published this month yet. Check back tomorrow.
+        </p>
+
+      {% endif %}
+
+    </div>
+  </main>
+
+  <!-- ===== Submit URL Footer ===== -->
+  <footer class="footer-submit">
+    <div class="container">
+      <p>Spotted a relevant article? Submit the URL &rarr;</p>
+      <a class="footer-submit__link" href="{{ form_url }}" target="_blank" rel="noopener noreferrer">
+        Submit article
+      </a>
+    </div>
+  </footer>
+
+  <!-- ===== Site Footer ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>Korea Velvet News is maintained by DINZ Korea.</p>
+      <p>Updated daily.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

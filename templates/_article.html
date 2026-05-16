@@ -1,0 +1,69 @@
+{#
+  _article.html — Article partial for Korea Velvet News
+  Included inside {% for article in articles %} in current_month.html.
+  Loop variables (loop.index etc.) are available because this is a simple include.
+  Phase A: plain text body only, no markdown rendering.
+#}
+
+{# --- Resolve image URL --- #}
+{% if article.image_attachments and article.image_attachments[0].url %}
+  {% set resolved_image = article.image_attachments[0].url %}
+{% elif article.image_url %}
+  {% set resolved_image = article.image_url %}
+{% else %}
+  {% set resolved_image = '' %}
+{% endif %}
+
+{# --- Format published date: "9 May 2026" --- #}
+{% set date_parts = article.published_date.split('-') if article.published_date else [] %}
+{% set month_names = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'] %}
+{% if date_parts|length == 3 %}
+  {% set formatted_date = date_parts[2]|int|string + ' ' + month_names[date_parts[1]|int] + ' ' + date_parts[0] %}
+{% else %}
+  {% set formatted_date = article.published_date %}
+{% endif %}
+
+<article id="article-{{ loop.index }}" class="article">
+
+  {% if resolved_image %}
+  <img
+    class="article__image"
+    src="{{ resolved_image }}"
+    alt="{{ article.title_en | e }}"
+    loading="lazy"
+  >
+  {% endif %}
+
+  <h2 class="article__title">{{ article.title_en | e }}</h2>
+
+  <p class="article__meta">{{ formatted_date }}&nbsp;&middot;&nbsp;{{ article.source_name | e }}</p>
+
+  <div class="article__body">
+    {# Split plain text on double newlines for paragraph breaks.
+       Fall back to single newlines if no double newlines present. #}
+    {% if '\n\n' in article.body_en %}
+      {% for para in article.body_en.split('\n\n') %}
+        {% if para.strip() %}
+        <p>{{ para.strip() | e }}</p>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% for para in article.body_en.split('\n') %}
+        {% if para.strip() %}
+        <p>{{ para.strip() | e }}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <p class="article__source-line">
+    <a
+      class="article__read-link"
+      href="{{ article.url | e }}"
+      target="_blank"
+      rel="noopener noreferrer"
+    >Read original &rarr;</a>
+  </p>
+
+</article>
