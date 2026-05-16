@@ -8,6 +8,7 @@ import anthropic
 _PROMPTS_DIR = Path(__file__).parent.parent.parent / "prompts"
 _MODEL = "claude-haiku-4-5-20251001"
 _BATCH_SIZE = 10
+_MAX_TOKENS = 4096
 
 
 def _load_system_prompt() -> str:
@@ -38,7 +39,7 @@ def classify_articles(articles: list[dict]) -> list[dict]:
         batch = articles[i : i + _BATCH_SIZE]
         message = client.messages.create(
             model=_MODEL,
-            max_tokens=1024,
+            max_tokens=_MAX_TOKENS,
             system=system_prompt,
             messages=[{"role": "user", "content": _build_user_message(batch)}],
         )
